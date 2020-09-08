@@ -14,7 +14,7 @@ public class GooseGameAT {
     @Before
     public void setUp() throws Exception {
         outputChannel = mock(OutputChannel.class);
-        gooseGame = new GooseGame(outputChannel);
+        gooseGame = new GooseGame(new Board(), outputChannel);
     }
 
     @Test

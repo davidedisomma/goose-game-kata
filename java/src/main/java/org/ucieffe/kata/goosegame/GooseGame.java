@@ -4,7 +4,6 @@
 package org.ucieffe.kata.goosegame;
 
 import java.io.*;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,43 +13,47 @@ public class GooseGame {
     public static final String ADD_PLAYER_COMMAND_PREFIX = "add player ";
 
     private final OutputChannel outputChannel;
-    private final LinkedHashMap<String, Player> players;
+    private final Board board;
 
-    public GooseGame(OutputChannel out) {
-        outputChannel = out;
-        players = new LinkedHashMap<>();
+    public GooseGame(Board board, OutputChannel outputChannel) {
+        this.outputChannel = outputChannel;
+        this.board = board;
     }
 
     public void nextCommand(String command) {
-        String result = "No command recognized";
-        if(command.startsWith(ADD_PLAYER_COMMAND_PREFIX)) {
+        if (isAddPlayerCommand(command)) {
             Player player = extractPlayerFrom(command);
-            if(isAnExistentPlayer(player)) {
-                result = player.getName() + ": already existing player";
+            if (board.isAnExistentPlayer(player)) {
+                outputChannel.write(player.getName() + ": already existing player");
             } else {
-                players.put(player.getName(), player);
-                result = returnAddPlayerResult();
+                board.addPlayer(player);
+                outputChannel.write(returnAddPlayerResult());
             }
-        } else if (isMoveCommand(command)) {
+            return;
+        }
+        if (isMoveCommand(command)) {
             Move move = extractMoveFrom(command);
-            Player player = players.get(move.getPlayerName());
-            Integer currentPosition = player.getCurrentPosition();
-            player.movePosition(move);
-            if(currentPosition == 0) {
-                result = String.format(
+            Player player = board.movePlayer(move);
+            if (player.getLastPosition() == 0) {
+                outputChannel.write(String.format(
                         "%s rolls %d, %d. %s moves from Start to %d",
                         move.getPlayerName(), move.getFirstDice(), move.getSecondDice(),
                         move.getPlayerName(), player.getCurrentPosition()
-                );
+                ));
             } else {
-                result = String.format(
+                outputChannel.write(String.format(
                         "%s rolls %d, %d. %s moves from %d to %d",
                         move.getPlayerName(), move.getFirstDice(), move.getSecondDice(),
-                        move.getPlayerName(), currentPosition, player.getCurrentPosition()
-                );
+                        move.getPlayerName(), player.getLastPosition(), player.getCurrentPosition()
+                ));
             }
+            return;
         }
-        outputChannel.write(result);
+        outputChannel.write("No command recognized");
+    }
+
+    private boolean isAddPlayerCommand(String command) {
+        return command.startsWith(ADD_PLAYER_COMMAND_PREFIX);
     }
 
     private Move extractMoveFrom(String command) {
@@ -72,10 +75,6 @@ public class GooseGame {
         return matcher.matches();
     }
 
-    private boolean isAnExistentPlayer(Player player) {
-        return players.containsKey(player.getName());
-    }
-
     private Player extractPlayerFrom(String command) {
         return new Player(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()));
     }
@@ -85,16 +84,16 @@ public class GooseGame {
     }
 
     private String concatenateAllPlayers() {
-        return players.entrySet().stream()
-                .map(Map.Entry::getKey)
+        return board.getAllPlayers().stream()
+                .map(Player::getName)
                 .collect(Collectors.joining(", "));
     }
 
     public static void main(String[] args) {
         InputChannel inputChannel = new SystemInputChannel(new BufferedReader(new InputStreamReader(System.in)));
         OutputChannel outputChannel = new SystemOutputChannel(System.out);
-        GooseGame gooseGame = new GooseGame(outputChannel);
-        while(true) {
+        GooseGame gooseGame = new GooseGame(new Board(), outputChannel);
+        while (true) {
             String command = inputChannel.read();
             gooseGame.nextCommand(command);
         }
