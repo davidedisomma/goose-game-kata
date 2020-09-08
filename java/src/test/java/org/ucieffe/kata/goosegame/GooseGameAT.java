@@ -40,4 +40,17 @@ public class GooseGameAT {
 
         verify(outputChannel).write("No command recognized");
     }
+
+    @Test
+    public void movePlayersFromStart() {
+        gooseGame.nextCommand("add player Pippo");
+        gooseGame.nextCommand("add player Pluto");
+
+        gooseGame.nextCommand("move Pippo 4, 2");
+        verify(outputChannel).write("Pippo rolls 4, 2. Pippo moves from Start to 6");
+        gooseGame.nextCommand("move Pluto 2, 2");
+        verify(outputChannel).write("Pluto rolls 2, 2. Pluto moves from Start to 4");
+        gooseGame.nextCommand("move Pippo 2, 3");
+        verify(outputChannel).write("Pippo rolls 2, 3. Pippo moves from 6 to 11");
+    }
 }

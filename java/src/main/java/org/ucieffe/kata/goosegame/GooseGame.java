@@ -4,8 +4,9 @@
 package org.ucieffe.kata.goosegame;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GooseGame {
@@ -13,33 +14,70 @@ public class GooseGame {
     public static final String ADD_PLAYER_COMMAND_PREFIX = "add player ";
 
     private final OutputChannel outputChannel;
-    private List<String> players;
+    private final LinkedHashMap<String, Player> players;
 
     public GooseGame(OutputChannel out) {
         outputChannel = out;
-        players = new ArrayList<>();
+        players = new LinkedHashMap<>();
     }
 
     public void nextCommand(String command) {
         String result = "No command recognized";
         if(command.startsWith(ADD_PLAYER_COMMAND_PREFIX)) {
-            String player = extractPlayerFrom(command);
+            Player player = extractPlayerFrom(command);
             if(isAnExistentPlayer(player)) {
-                result = player + ": already existing player";
+                result = player.getName() + ": already existing player";
             } else {
-                players.add(player);
+                players.put(player.getName(), player);
                 result = returnAddPlayerResult();
+            }
+        } else if (isMoveCommand(command)) {
+            Move move = extractMoveFrom(command);
+            Player player = players.get(move.getPlayerName());
+            Integer currentPosition = player.getCurrentPosition();
+            player.movePosition(move);
+            if(currentPosition == 0) {
+                result = String.format(
+                        "%s rolls %d, %d. %s moves from Start to %d",
+                        move.getPlayerName(), move.getFirstDice(), move.getSecondDice(),
+                        move.getPlayerName(), player.getCurrentPosition()
+                );
+            } else {
+                result = String.format(
+                        "%s rolls %d, %d. %s moves from %d to %d",
+                        move.getPlayerName(), move.getFirstDice(), move.getSecondDice(),
+                        move.getPlayerName(), currentPosition, player.getCurrentPosition()
+                );
             }
         }
         outputChannel.write(result);
     }
 
-    private boolean isAnExistentPlayer(String player) {
-        return players.contains(player);
+    private Move extractMoveFrom(String command) {
+        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String player = matcher.group(1);
+            String firstDice = matcher.group(2);
+            String secondDice = matcher.group(3);
+            return new Move(player, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
+        } else {
+            throw new IllegalArgumentException(command);
+        }
     }
 
-    private String extractPlayerFrom(String command) {
-        return command.substring(ADD_PLAYER_COMMAND_PREFIX.length());
+    private boolean isMoveCommand(String command) {
+        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
+        Matcher matcher = pattern.matcher(command);
+        return matcher.matches();
+    }
+
+    private boolean isAnExistentPlayer(Player player) {
+        return players.containsKey(player.getName());
+    }
+
+    private Player extractPlayerFrom(String command) {
+        return new Player(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()));
     }
 
     private String returnAddPlayerResult() {
@@ -47,7 +85,9 @@ public class GooseGame {
     }
 
     private String concatenateAllPlayers() {
-        return players.stream().collect(Collectors.joining(", "));
+        return players.entrySet().stream()
+                .map(Map.Entry::getKey)
+                .collect(Collectors.joining(", "));
     }
 
     public static void main(String[] args) {
