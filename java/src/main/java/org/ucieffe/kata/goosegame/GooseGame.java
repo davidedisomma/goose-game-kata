@@ -23,10 +23,23 @@ public class GooseGame {
     public void nextCommand(String command) {
         String result = "No command recognized";
         if(command.startsWith(ADD_PLAYER_COMMAND_PREFIX)) {
-            players.add(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()));
-            result = returnAddPlayerResult();
+            String player = extractPlayerFrom(command);
+            if(isAnExistentPlayer(player)) {
+                result = player + ": already existing player";
+            } else {
+                players.add(player);
+                result = returnAddPlayerResult();
+            }
         }
         outputChannel.write(result);
+    }
+
+    private boolean isAnExistentPlayer(String player) {
+        return players.contains(player);
+    }
+
+    private String extractPlayerFrom(String command) {
+        return command.substring(ADD_PLAYER_COMMAND_PREFIX.length());
     }
 
     private String returnAddPlayerResult() {
