@@ -5,30 +5,23 @@ import java.util.Objects;
 public class Player {
 
     private String name;
-    private Integer lastPosition;
-    private Integer currentPosition;
+    private Box currentPosition;
 
     public Player(String name) {
         this.name = name;
-        lastPosition = 0;
-        currentPosition = 0;
+        currentPosition = new StartBox();
     }
 
     public String getName() {
         return name;
     }
 
-    public Integer getCurrentPosition() {
+    public Box getCurrentPosition() {
         return currentPosition;
     }
 
-    public Integer getLastPosition() {
-        return lastPosition;
-    }
-
-    public void movePosition(Move move) {
-        lastPosition = currentPosition;
-        currentPosition += move.calculateProgress();
+    public void movePosition(RollDices rollDices) {
+        currentPosition = currentPosition.movePosition(rollDices);
     }
 
     @Override

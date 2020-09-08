@@ -20,10 +20,11 @@ public class Board {
         players.put(player.getName(), player);
     }
 
-    public Player movePlayer(Move move) {
-        Player player = players.get(move.getPlayerName());
-        player.movePosition(move);
-        return player;
+    public Move movePlayer(RollDices rollDices) {
+        Player player = players.get(rollDices.getPlayerName());
+        Box lastPosition = player.getCurrentPosition();
+        player.movePosition(rollDices);
+        return new Move(player, rollDices, lastPosition);
     }
 
     public List<Player> getAllPlayers() {

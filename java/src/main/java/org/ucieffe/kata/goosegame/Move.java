@@ -1,31 +1,29 @@
 package org.ucieffe.kata.goosegame;
 
 public class Move {
+    private Player player;
+    private RollDices rollDices;
+    private Box lastPosition;
 
-    private final String playerName;
-    private final Integer firstDice;
-    private final Integer secondDice;
-
-    public Move(String playerName, Integer firstDice, Integer secondDice) {
-
-        this.playerName = playerName;
-        this.firstDice = firstDice;
-        this.secondDice = secondDice;
+    public Move(Player player, RollDices rollDices, Box lastPosition) {
+        this.player = player;
+        this.rollDices = rollDices;
+        this.lastPosition = lastPosition;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Integer getFirstDice() {
-        return firstDice;
+    public RollDices getRollDices() {
+        return rollDices;
     }
 
-    public Integer getSecondDice() {
-        return secondDice;
+    public Box getLastPosition() {
+        return lastPosition;
     }
 
-    public Integer calculateProgress() {
-        return firstDice + secondDice;
+    public Box getCurrentPosition() {
+        return player.getCurrentPosition();
     }
 }

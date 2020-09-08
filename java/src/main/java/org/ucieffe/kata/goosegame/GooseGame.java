@@ -32,21 +32,13 @@ public class GooseGame {
             return;
         }
         if (isMoveCommand(command)) {
-            Move move = extractMoveFrom(command);
-            Player player = board.movePlayer(move);
-            if (player.getLastPosition() == 0) {
-                outputChannel.write(String.format(
-                        "%s rolls %d, %d. %s moves from Start to %d",
-                        move.getPlayerName(), move.getFirstDice(), move.getSecondDice(),
-                        move.getPlayerName(), player.getCurrentPosition()
-                ));
-            } else {
-                outputChannel.write(String.format(
-                        "%s rolls %d, %d. %s moves from %d to %d",
-                        move.getPlayerName(), move.getFirstDice(), move.getSecondDice(),
-                        move.getPlayerName(), player.getLastPosition(), player.getCurrentPosition()
-                ));
-            }
+            RollDices rollDices = extractMoveFrom(command);
+            Move move = board.movePlayer(rollDices);
+            outputChannel.write(String.format(
+                    "%s rolls %d, %d. %s moves from %s to %s",
+                    rollDices.getPlayerName(), rollDices.getFirstDice(), rollDices.getSecondDice(),
+                    rollDices.getPlayerName(), move.getLastPosition().getName(), move.getCurrentPosition().getName()
+            ));
             return;
         }
         outputChannel.write("No command recognized");
@@ -56,14 +48,14 @@ public class GooseGame {
         return command.startsWith(ADD_PLAYER_COMMAND_PREFIX);
     }
 
-    private Move extractMoveFrom(String command) {
+    private RollDices extractMoveFrom(String command) {
         Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             String player = matcher.group(1);
             String firstDice = matcher.group(2);
             String secondDice = matcher.group(3);
-            return new Move(player, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
+            return new RollDices(player, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
         } else {
             throw new IllegalArgumentException(command);
         }
