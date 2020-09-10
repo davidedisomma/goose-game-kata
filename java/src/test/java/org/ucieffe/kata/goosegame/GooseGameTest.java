@@ -1,12 +1,13 @@
 package org.ucieffe.kata.goosegame;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class GooseGameAT {
+public class GooseGameTest {
 
     private OutputChannel outputChannel;
     private GooseGame gooseGame;
@@ -52,5 +53,16 @@ public class GooseGameAT {
         verify(outputChannel).write("Pluto rolls 2, 2. Pluto moves from Start to 4");
         gooseGame.nextCommand("move Pippo 2, 3");
         verify(outputChannel).write("Pippo rolls 2, 3. Pippo moves from 6 to 11");
+    }
+
+    @Test
+    @Ignore
+    public void playerWin() {
+        Board board = new Board();
+        board.addPlayer(new Player("Pippo", new Box(60)));
+        gooseGame = new GooseGame(board, outputChannel);
+
+        gooseGame.nextCommand("move Pippo 1, 2");
+        verify(outputChannel).write("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!");
     }
 }

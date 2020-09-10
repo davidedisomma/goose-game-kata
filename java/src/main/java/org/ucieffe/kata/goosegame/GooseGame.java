@@ -6,7 +6,6 @@ package org.ucieffe.kata.goosegame;
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class GooseGame {
 
@@ -23,25 +22,13 @@ public class GooseGame {
     public void nextCommand(String command) {
         if (isAddPlayerCommand(command)) {
             Player player = extractPlayerFrom(command);
-            if (board.isAnExistentPlayer(player)) {
-                outputChannel.write(player.getName() + ": already existing player");
-            } else {
-                board.addPlayer(player);
-                outputChannel.write(returnAddPlayerResult());
-            }
-            return;
-        }
-        if (isMoveCommand(command)) {
+            new AddPlayerCommand(board, outputChannel, player).execute();
+        } else if (isMoveCommand(command)) {
             RollDices rollDices = extractMoveFrom(command);
-            Move move = board.movePlayer(rollDices);
-            outputChannel.write(String.format(
-                    "%s rolls %d, %d. %s moves from %s to %s",
-                    rollDices.getPlayerName(), rollDices.getFirstDice(), rollDices.getSecondDice(),
-                    rollDices.getPlayerName(), move.getLastPosition().getName(), move.getCurrentPosition().getName()
-            ));
-            return;
+            new RollDiceCommand(board, outputChannel, rollDices).execute();
+        } else {
+            new InvalidCommand(outputChannel).execute();
         }
-        outputChannel.write("No command recognized");
     }
 
     private boolean isAddPlayerCommand(String command) {
@@ -68,17 +55,7 @@ public class GooseGame {
     }
 
     private Player extractPlayerFrom(String command) {
-        return new Player(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()));
-    }
-
-    private String returnAddPlayerResult() {
-        return "players: " + concatenateAllPlayers();
-    }
-
-    private String concatenateAllPlayers() {
-        return board.getAllPlayers().stream()
-                .map(Player::getName)
-                .collect(Collectors.joining(", "));
+        return new Player(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()), new StartBox());
     }
 
     public static void main(String[] args) {

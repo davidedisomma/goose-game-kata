@@ -7,9 +7,9 @@ public class Player {
     private String name;
     private Box currentPosition;
 
-    public Player(String name) {
+    public Player(String name, Box currentPosition) {
         this.name = name;
-        currentPosition = new StartBox();
+        this.currentPosition = currentPosition;
     }
 
     public String getName() {
