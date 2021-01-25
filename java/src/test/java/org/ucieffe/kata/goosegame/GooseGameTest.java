@@ -4,18 +4,20 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class GooseGameTest {
 
+
     private OutputChannel outputChannel;
     private GooseGame gooseGame;
+    private CommandInterpreter commandInterpreter;
 
     @Before
     public void setUp() throws Exception {
         outputChannel = mock(OutputChannel.class);
-        gooseGame = new GooseGame(new Board(), outputChannel);
+        commandInterpreter = new CommandInterpreter(new CommandFactory(new Board(), outputChannel));
+        gooseGame = new GooseGame(commandInterpreter);
     }
 
     @Test
@@ -60,7 +62,7 @@ public class GooseGameTest {
     public void playerWin() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
-        gooseGame = new GooseGame(board, outputChannel);
+        gooseGame = new GooseGame(commandInterpreter);
 
         gooseGame.nextCommand("move Pippo 1, 2");
         verify(outputChannel).write("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!");

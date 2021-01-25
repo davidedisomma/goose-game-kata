@@ -1,12 +1,12 @@
 package org.ucieffe.kata.goosegame;
 
-public class RollDiceCommand implements GooseGameCommand {
+public class RollDicesCommand implements GooseGameCommand {
 
     private final Board board;
     private final OutputChannel outputChannel;
     private final RollDices rollDices;
 
-    public RollDiceCommand(Board board, OutputChannel outputChannel, RollDices rollDices) {
+    public RollDicesCommand(Board board, OutputChannel outputChannel, RollDices rollDices) {
         this.board = board;
         this.outputChannel = outputChannel;
         this.rollDices = rollDices;

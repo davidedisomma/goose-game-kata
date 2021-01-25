@@ -4,64 +4,26 @@
 package org.ucieffe.kata.goosegame;
 
 import java.io.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GooseGame {
 
-    public static final String ADD_PLAYER_COMMAND_PREFIX = "add player ";
+    private final CommandInterpreter commandInterpreter;
 
-    private final OutputChannel outputChannel;
-    private final Board board;
-
-    public GooseGame(Board board, OutputChannel outputChannel) {
-        this.outputChannel = outputChannel;
-        this.board = board;
+    public GooseGame(CommandInterpreter commandInterpreter) {
+        this.commandInterpreter = commandInterpreter;
     }
 
-    public void nextCommand(String command) {
-        if (isAddPlayerCommand(command)) {
-            Player player = extractPlayerFrom(command);
-            new AddPlayerCommand(board, outputChannel, player).execute();
-        } else if (isMoveCommand(command)) {
-            RollDices rollDices = extractMoveFrom(command);
-            new RollDiceCommand(board, outputChannel, rollDices).execute();
-        } else {
-            new InvalidCommand(outputChannel).execute();
-        }
-    }
-
-    private boolean isAddPlayerCommand(String command) {
-        return command.startsWith(ADD_PLAYER_COMMAND_PREFIX);
-    }
-
-    private RollDices extractMoveFrom(String command) {
-        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
-        Matcher matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            String player = matcher.group(1);
-            String firstDice = matcher.group(2);
-            String secondDice = matcher.group(3);
-            return new RollDices(player, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
-        } else {
-            throw new IllegalArgumentException(command);
-        }
-    }
-
-    private boolean isMoveCommand(String command) {
-        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
-        Matcher matcher = pattern.matcher(command);
-        return matcher.matches();
-    }
-
-    private Player extractPlayerFrom(String command) {
-        return new Player(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()), new StartBox());
+    public void nextCommand(String stringCommand) {
+        GooseGameCommand command = commandInterpreter.run(stringCommand);
+        command.execute();
     }
 
     public static void main(String[] args) {
         InputChannel inputChannel = new SystemInputChannel(new BufferedReader(new InputStreamReader(System.in)));
         OutputChannel outputChannel = new SystemOutputChannel(System.out);
-        GooseGame gooseGame = new GooseGame(new Board(), outputChannel);
+        Board board = new Board();
+        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board, outputChannel));
+        GooseGame gooseGame = new GooseGame(commandInterpreter);
         while (true) {
             String command = inputChannel.read();
             gooseGame.nextCommand(command);
