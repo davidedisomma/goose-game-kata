@@ -23,7 +23,12 @@ public class Board {
     public Move movePlayer(RollDices rollDices) {
         Player player = players.get(rollDices.getPlayerName());
         Box lastPosition = player.getCurrentPosition();
-        player.movePosition(rollDices);
+        Integer nextPosition = lastPosition.getPosition() + rollDices.totalDices();
+        if(nextPosition == 63) {
+            player.movePosition(new WinningBox());
+        } else {
+            player.movePosition(new Box(nextPosition));
+        }
         return new Move(player, rollDices, lastPosition);
     }
 

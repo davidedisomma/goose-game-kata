@@ -58,11 +58,10 @@ public class GooseGameTest {
     }
 
     @Test
-    @Ignore
     public void playerWin() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
-        gooseGame = new GooseGame(commandInterpreter);
+        gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board, outputChannel)));
 
         gooseGame.nextCommand("move Pippo 1, 2");
         verify(outputChannel).write("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!");

@@ -15,10 +15,14 @@ public class RollDicesCommand implements GooseGameCommand {
     @Override
     public void execute() {
         Move move = board.movePlayer(rollDices);
-        outputChannel.write(String.format(
+        String message = String.format(
                 "%s rolls %d, %d. %s moves from %s to %s",
                 rollDices.getPlayerName(), rollDices.getFirstDice(), rollDices.getSecondDice(),
                 rollDices.getPlayerName(), move.getLastPosition().getName(), move.getCurrentPosition().getName()
-        ));
+        );
+        if(move.getCurrentPosition() instanceof WinningBox) {
+            message += ". " + move.getPlayer().getName() + " Wins!!";
+        }
+        outputChannel.write(message);
     }
 }

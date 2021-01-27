@@ -20,8 +20,8 @@ public class Player {
         return currentPosition;
     }
 
-    public void movePosition(RollDices rollDices) {
-        currentPosition = currentPosition.movePosition(rollDices);
+    public void movePosition(Box currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
     @Override

@@ -10,4 +10,9 @@ public class StartBox extends Box {
     public String getName() {
         return "Start";
     }
+
+    @Override
+    public String toString() {
+        return "StartBox{}";
+    }
 }
