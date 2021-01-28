@@ -58,12 +58,22 @@ public class GooseGameTest {
     }
 
     @Test
-    public void playerWin() {
+    public void playerWinWhenReachWinningPosition() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
         gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board, outputChannel)));
 
         gooseGame.nextCommand("move Pippo 1, 2");
         verify(outputChannel).write("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!");
+    }
+
+    @Test
+    public void playerBounceWhenOvercomeWinningPosition() {
+        Board board = new Board();
+        board.addPlayer(new Player("Pippo", new Box(60)));
+        gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board, outputChannel)));
+
+        gooseGame.nextCommand("move Pippo 3, 2");
+        verify(outputChannel).write("Pippo rolls 3, 2. Pippo moves from 60 to 63. Pippo bounces! Pippo returns to 61");
     }
 }

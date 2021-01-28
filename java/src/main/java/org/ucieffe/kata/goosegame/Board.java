@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Board {
 
+    public static final int WINNING_POSITION = 63;
     private final LinkedHashMap<String, Player> players;
 
     public Board() {
@@ -24,8 +25,11 @@ public class Board {
         Player player = players.get(rollDices.getPlayerName());
         Box lastPosition = player.getCurrentPosition();
         Integer nextPosition = lastPosition.getPosition() + rollDices.totalDices();
-        if(nextPosition == 63) {
+        if(nextPosition == WINNING_POSITION) {
             player.movePosition(new WinningBox());
+        } else if(nextPosition > WINNING_POSITION) {
+            player.movePosition(new Box(WINNING_POSITION - (nextPosition - WINNING_POSITION)));
+            return new BounceBackMove(player, rollDices, lastPosition);
         } else {
             player.movePosition(new Box(nextPosition));
         }
