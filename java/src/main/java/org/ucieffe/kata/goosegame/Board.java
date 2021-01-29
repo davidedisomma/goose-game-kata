@@ -27,6 +27,7 @@ public class Board {
         Integer nextPosition = lastPosition.getPosition() + rollDices.totalDices();
         if(nextPosition == WINNING_POSITION) {
             player.movePosition(new WinningBox());
+            return new WinningMove(player, rollDices, lastPosition);
         } else if(nextPosition > WINNING_POSITION) {
             player.movePosition(new Box(WINNING_POSITION - (nextPosition - WINNING_POSITION)));
             return new BounceBackMove(player, rollDices, lastPosition);

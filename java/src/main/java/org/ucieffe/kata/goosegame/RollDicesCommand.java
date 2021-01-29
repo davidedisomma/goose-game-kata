@@ -15,7 +15,10 @@ public class RollDicesCommand implements GooseGameCommand {
     @Override
     public void execute() {
         Move move = board.movePlayer(rollDices);
+        outputChannel.write(composeMessage(move));
+    }
 
+    private String composeMessage(Move move) {
         String message;
         if (move instanceof BounceBackMove) {
             message = String.format(
@@ -24,16 +27,21 @@ public class RollDicesCommand implements GooseGameCommand {
                     rollDices.getPlayerName(), move.getLastPosition().getName(), rollDices.getPlayerName(),
                     rollDices.getPlayerName(), move.getCurrentPosition().getName()
             );
+        } else if (move instanceof WinningMove) {
+            message = String.format(
+                    "%s rolls %d, %d. %s moves from %s to %s. %s Wins!!",
+                    rollDices.getPlayerName(), rollDices.getFirstDice(), rollDices.getSecondDice(),
+                    rollDices.getPlayerName(), move.getLastPosition().getName(),
+                    move.getCurrentPosition().getName(), rollDices.getPlayerName()
+            );
         } else {
             message = String.format(
                     "%s rolls %d, %d. %s moves from %s to %s",
                     rollDices.getPlayerName(), rollDices.getFirstDice(), rollDices.getSecondDice(),
-                    rollDices.getPlayerName(), move.getLastPosition().getName(), move.getCurrentPosition().getName()
+                    rollDices.getPlayerName(), move.getLastPosition().getName(),
+                    move.getCurrentPosition().getName()
             );
-            if (move.getCurrentPosition() instanceof WinningBox) {
-                message += ". " + move.getPlayer().getName() + " Wins!!";
-            }
         }
-        outputChannel.write(message);
+        return message;
     }
 }
