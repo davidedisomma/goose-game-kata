@@ -13,12 +13,12 @@ public class Board {
         players = new LinkedHashMap<>();
     }
 
-    public boolean isAnExistentPlayer(Player player) {
-        return players.containsKey(player.getName());
+    public boolean isAnExistentPlayer(String playerName) {
+        return players.containsKey(playerName);
     }
 
-    public void addPlayer(Player player) {
-        players.put(player.getName(), player);
+    public void addPlayer(String playerName) {
+        players.put(playerName, new Player(playerName, new StartBox()));
     }
 
     public Move movePlayer(RollDices rollDices) {

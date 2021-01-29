@@ -15,8 +15,8 @@ public class CommandInterpreter {
 
     public GooseGameCommand run(String command) {
         if(isAddPlayerCommand(command)) {
-            Player player = extractPlayerFrom(command);
-            return commandFactory.addPlayerCommand(player);
+            String playerName = extractPlayerFrom(command);
+            return commandFactory.addPlayerCommand(playerName);
         }
         if(isMoveCommand(command)) {
             RollDices rollDices = extractMoveFrom(command);
@@ -35,8 +35,8 @@ public class CommandInterpreter {
         return command.startsWith(ADD_PLAYER_COMMAND_PREFIX);
     }
 
-    private Player extractPlayerFrom(String command) {
-        return new Player(command.substring(ADD_PLAYER_COMMAND_PREFIX.length()), new StartBox());
+    private String extractPlayerFrom(String command) {
+        return command.substring(ADD_PLAYER_COMMAND_PREFIX.length());
     }
 
     private RollDices extractMoveFrom(String command) {

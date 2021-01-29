@@ -18,7 +18,7 @@ public class CommandFactory {
         return new RollDicesCommand(board, outputChannel, rollDices);
     }
 
-    public GooseGameCommand addPlayerCommand(Player player) {
-        return new AddPlayerCommand(board, outputChannel, player);
+    public GooseGameCommand addPlayerCommand(String playerName) {
+        return new AddPlayerCommand(board, outputChannel, playerName);
     }
 }
