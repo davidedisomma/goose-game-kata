@@ -19,7 +19,7 @@ public class AddPlayerCommand implements GooseGameCommand {
         if (board.isAnExistentPlayer(playerName)) {
             outputChannel.write(playerName + ": already existing player");
         } else {
-            board.addPlayer(playerName);
+            board.addPlayer(new Player(playerName, new StartBox()));
             outputChannel.write(returnAddPlayerResult());
         }
     }
