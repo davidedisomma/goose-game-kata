@@ -1,10 +1,11 @@
 package org.ucieffe.kata.goosegame;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class CommandInterpreterTest {
@@ -12,7 +13,7 @@ public class CommandInterpreterTest {
     private CommandInterpreter interpreter;
     private CommandFactory commandFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         commandFactory = new CommandFactory(new Board(), mock(OutputChannel.class));
         interpreter = new CommandInterpreter(commandFactory);

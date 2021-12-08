@@ -1,8 +1,7 @@
 package org.ucieffe.kata.goosegame;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
@@ -13,8 +12,8 @@ public class GooseGameTest {
     private GooseGame gooseGame;
     private CommandInterpreter commandInterpreter;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         outputChannel = mock(OutputChannel.class);
         commandInterpreter = new CommandInterpreter(new CommandFactory(new Board(), outputChannel));
         gooseGame = new GooseGame(commandInterpreter);

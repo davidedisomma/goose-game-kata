@@ -1,16 +1,17 @@
 package org.ucieffe.kata.goosegame;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BoardTest {
 
     private Board board;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         board = new Board();
     }
