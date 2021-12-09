@@ -1,36 +1,33 @@
 package org.ucieffe.kata.goosegame;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddPlayerCommand implements GooseGameCommand {
 
     private final Board board;
-    private final OutputChannel outputChannel;
+    private final OutputEventListener listener;
     private final String playerName;
 
-    public AddPlayerCommand(Board board, OutputChannel outputChannel, String playerName) {
-        this.outputChannel = outputChannel;
+    public AddPlayerCommand(Board board, OutputEventListener listener, String playerName) {
         this.board = board;
+        this.listener = listener;
         this.playerName = playerName;
     }
 
     @Override
     public void execute() {
         if (board.isAnExistentPlayer(playerName)) {
-            outputChannel.write(playerName + ": already existing player");
+            listener.receive(new PlayerAlreadyPresentEvent(playerName));
         } else {
             board.addPlayer(new Player(playerName, new StartBox()));
-            outputChannel.write(returnAddPlayerResult());
+            listener.receive(new AddPlayerEvent(fetchAllPlayerNames()));
         }
     }
 
-    private String returnAddPlayerResult() {
-        return "players: " + concatenateAllPlayers();
-    }
-
-    private String concatenateAllPlayers() {
+    private List<String> fetchAllPlayerNames() {
         return board.getAllPlayers().stream()
                 .map(Player::getName)
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.toList());
     }
 }

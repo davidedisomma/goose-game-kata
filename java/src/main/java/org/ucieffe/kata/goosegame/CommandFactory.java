@@ -4,10 +4,12 @@ public class CommandFactory {
 
     private Board board;
     private OutputChannel outputChannel;
+    private OutputEventListener listener;
 
-    public CommandFactory(Board board, OutputChannel outputChannel) {
+    public CommandFactory(Board board, OutputChannel outputChannel, OutputEventListener listener) {
         this.board = board;
         this.outputChannel = outputChannel;
+        this.listener = listener;
     }
 
     public InvalidCommand invalidCommand() {
@@ -15,10 +17,10 @@ public class CommandFactory {
     }
 
     public RollDicesCommand rollDicesCommand(RollDices rollDices) {
-        return new RollDicesCommand(board, outputChannel, rollDices);
+        return new RollDicesCommand(board, listener, rollDices);
     }
 
     public GooseGameCommand addPlayerCommand(String playerName) {
-        return new AddPlayerCommand(board, outputChannel, playerName);
+        return new AddPlayerCommand(board, listener, playerName);
     }
 }

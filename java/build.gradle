@@ -20,7 +20,24 @@ repositories {
     mavenCentral()
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava {
+    options.compilerArgs += ['--enable-preview']
+}
+
+tasks.withType(JavaCompile).all {
+    options.compilerArgs += ['--enable-preview', '-Xlint:preview']
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs(['--enable-preview'])
+}
+
 test {
+    jvmArgs(['--enable-preview'])
     useJUnitPlatform()
 }
 
@@ -34,4 +51,4 @@ dependencies {
 }
 
 // Define the main class for the application
-mainClassName = 'org.ucieffe.kata.goosegame.GooseGameApp'
+mainClassName = 'org.ucieffe.kata.goosegame.GooseGame'

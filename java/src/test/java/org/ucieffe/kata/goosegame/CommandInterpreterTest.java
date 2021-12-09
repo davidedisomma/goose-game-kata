@@ -15,7 +15,7 @@ public class CommandInterpreterTest {
 
     @BeforeEach
     public void setUp() {
-        commandFactory = new CommandFactory(new Board(), mock(OutputChannel.class));
+        commandFactory = new CommandFactory(new Board(), mock(OutputChannel.class), null);
         interpreter = new CommandInterpreter(commandFactory);
     }
 

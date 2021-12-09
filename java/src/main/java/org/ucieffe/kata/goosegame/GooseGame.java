@@ -18,15 +18,17 @@ public class GooseGame {
         command.execute();
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) {
         InputChannel inputChannel = new SystemInputChannel(new BufferedReader(new InputStreamReader(System.in)));
         OutputChannel outputChannel = new SystemOutputChannel(System.out);
+        OutputStreamEventListener listener = new OutputStreamEventListener(outputChannel);
         Board board = new Board();
-        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board, outputChannel));
+        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board, outputChannel, listener));
         GooseGame gooseGame = new GooseGame(commandInterpreter);
-        while (true) {
+        do {
             String command = inputChannel.read();
             gooseGame.nextCommand(command);
-        }
+        } while (true);
     }
 }

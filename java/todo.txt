@@ -1,2 +1,1 @@
-- Pull out OutputChannel from commands
 - Apply Chain of Responsability in CommandFactory
