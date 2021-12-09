@@ -3,17 +3,15 @@ package org.ucieffe.kata.goosegame;
 public class CommandFactory {
 
     private Board board;
-    private OutputChannel outputChannel;
     private OutputEventListener listener;
 
-    public CommandFactory(Board board, OutputChannel outputChannel, OutputEventListener listener) {
+    public CommandFactory(Board board, OutputEventListener listener) {
         this.board = board;
-        this.outputChannel = outputChannel;
         this.listener = listener;
     }
 
     public InvalidCommand invalidCommand() {
-        return new InvalidCommand(outputChannel);
+        return new InvalidCommand(listener);
     }
 
     public RollDicesCommand rollDicesCommand(RollDices rollDices) {

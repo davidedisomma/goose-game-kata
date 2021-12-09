@@ -1,7 +1,5 @@
 package org.ucieffe.kata.goosegame;
 
-import java.util.stream.Collectors;
-
 public class OutputStreamEventListener implements OutputEventListener {
 
     private final OutputChannel out;
@@ -18,6 +16,7 @@ public class OutputStreamEventListener implements OutputEventListener {
             case BounceBackEvent e -> bounceBackMessage(e);
             case WinningEvent e -> winningMessage(e);
             case MoveEvent e -> moveMessage(e);
+            case InvalidCommandEvent e -> "No command recognized";
         };
 
         out.write(text);

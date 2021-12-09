@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class CommandInterpreterTest {
 
@@ -15,7 +14,7 @@ public class CommandInterpreterTest {
 
     @BeforeEach
     public void setUp() {
-        commandFactory = new CommandFactory(new Board(), mock(OutputChannel.class), null);
+        commandFactory = new CommandFactory(new Board(), null);
         interpreter = new CommandInterpreter(commandFactory);
     }
 

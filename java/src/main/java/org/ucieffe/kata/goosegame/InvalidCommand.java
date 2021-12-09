@@ -1,14 +1,14 @@
 package org.ucieffe.kata.goosegame;
 
 public class InvalidCommand implements GooseGameCommand {
-    private final OutputChannel outputChannel;
+    private final OutputEventListener listener;
 
-    public InvalidCommand(OutputChannel outputChannel) {
-        this.outputChannel = outputChannel;
+    public InvalidCommand(OutputEventListener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void execute() {
-        outputChannel.write("No command recognized");
+        listener.receive(new InvalidCommandEvent());
     }
 }

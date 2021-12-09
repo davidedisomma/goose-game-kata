@@ -24,7 +24,7 @@ public class GooseGame {
         OutputChannel outputChannel = new SystemOutputChannel(System.out);
         OutputStreamEventListener listener = new OutputStreamEventListener(outputChannel);
         Board board = new Board();
-        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board, outputChannel, listener));
+        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board, listener));
         GooseGame gooseGame = new GooseGame(commandInterpreter);
         do {
             String command = inputChannel.read();

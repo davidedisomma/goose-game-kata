@@ -2,7 +2,10 @@ package org.ucieffe.kata.goosegame;
 
 import java.util.List;
 
-public abstract sealed class GooseGameEvent permits AddPlayerEvent, PlayerAlreadyPresentEvent, BounceBackEvent, WinningEvent, MoveEvent{
+public abstract sealed class GooseGameEvent permits InvalidCommandEvent, AddPlayerEvent, PlayerAlreadyPresentEvent, BounceBackEvent, WinningEvent, MoveEvent{
+}
+
+final class InvalidCommandEvent extends GooseGameEvent {
 }
 
 final class AddPlayerEvent extends GooseGameEvent {
