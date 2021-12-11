@@ -14,7 +14,7 @@ public class CommandInterpreterTest {
 
     @BeforeEach
     public void setUp() {
-        commandFactory = new CommandFactory(new Board(), null);
+        commandFactory = new CommandFactory(new Board());
         interpreter = new CommandInterpreter(commandFactory);
     }
 

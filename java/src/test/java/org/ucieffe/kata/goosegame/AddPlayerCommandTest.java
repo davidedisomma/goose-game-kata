@@ -3,21 +3,59 @@ package org.ucieffe.kata.goosegame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class AddPlayerCommandTest {
 
     private AddPlayerCommand addPlayerCommand;
+    private Board board;
 
     @BeforeEach
     void setUp() {
-        addPlayerCommand = new AddPlayerCommand(null, null);
+        board = mock(Board.class);
+        addPlayerCommand = new AddPlayerCommand(board);
     }
 
     @Test
-    void commandIsTriggeredWhenAddPlayerText() {
-        assertTrue(addPlayerCommand.isTriggered("add player Pippo"));
-        assertTrue(addPlayerCommand.isTriggered("add player Charlie Brown"));
+    void addPlayerToBoardWhenAddPlayerText() {
+        when(board.isAnExistentPlayer("Pippo"))
+                .thenReturn(Boolean.FALSE);
+        addPlayerCommand.handle("add player Pippo");
+
+        verify(board).addPlayer(new Player("Pippo", new Box(0)));
+    }
+
+    @Test
+    void returnAddPlayerEventWhenAddPlayerText() {
+        when(board.isAnExistentPlayer(any()))
+                .thenReturn(Boolean.FALSE);
+        when(board.getAllPlayers())
+                .thenReturn(List.of(
+                        new Player("Pluto", new Box(0)),
+                        new Player("Pippo", new Box(0))
+                ));
+
+        GooseGameEvent event = addPlayerCommand.handle("add player Pippo");
+
+        assertThat(event, instanceOf(AddPlayerEvent.class));
+        AddPlayerEvent addPlayerEvent = (AddPlayerEvent)event;
+        assertThat(addPlayerEvent.playerNames, is(List.of("Pluto", "Pippo")));
+    }
+
+    @Test
+    void returnPlayerAlreadyPresentEvent() {
+        when(board.isAnExistentPlayer(any()))
+                .thenReturn(Boolean.TRUE);
+
+        GooseGameEvent event = addPlayerCommand.handle("add player Pippo");
+
+        assertThat(event, instanceOf(PlayerAlreadyPresentEvent.class));
     }
 
     @Test

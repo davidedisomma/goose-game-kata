@@ -1,8 +1,8 @@
 package org.ucieffe.kata.goosegame;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Board {
 
@@ -22,7 +22,7 @@ public class Board {
     }
 
     public Move movePlayer(RollDices rollDices) {
-        Player player = players.get(rollDices.getPlayerName());
+        Player player = players.get(rollDices.playerName());
         Box lastPosition = player.getCurrentPosition();
         Integer nextPosition = lastPosition.getPosition() + rollDices.totalDices();
         if(isLandedOnWinningBox(nextPosition)) {
@@ -58,6 +58,6 @@ public class Board {
     }
 
     public List<Player> getAllPlayers() {
-        return players.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(players.values());
     }
 }

@@ -6,37 +6,34 @@ import java.util.regex.Pattern;
 public class RollDicesCommand implements GooseGameCommand {
 
     private final Board board;
-    private final OutputEventListener listener;
 
-    public RollDicesCommand(Board board, OutputEventListener listener) {
+    public RollDicesCommand(Board board) {
         this.board = board;
-        this.listener = listener;
     }
 
     @Override
-    public void handle(String commandText) {
+    public GooseGameEvent handle(String commandText) {
         if(!isTriggered(commandText))
-            return;
+            return null;
         RollDices rollDices = extractMoveFrom(commandText);
         Move move = board.movePlayer(rollDices);
-        GooseGameEvent event = switch (move) {
+        return switch (move) {
             case BounceBackMove m -> new BounceBackEvent(m.getPlayer().getName(),
-                    m.getRollDices().getFirstDice(),
-                    m.getRollDices().getSecondDice(),
+                    m.getRollDices().firstDice(),
+                    m.getRollDices().secondDice(),
                     m.getLastPosition().getName(),
                     m.getCurrentPosition().getName());
             case WinningMove m -> new WinningEvent(m.getPlayer().getName(),
-                    m.getRollDices().getFirstDice(),
-                    m.getRollDices().getSecondDice(),
+                    m.getRollDices().firstDice(),
+                    m.getRollDices().secondDice(),
                     m.getLastPosition().getName(),
                     m.getCurrentPosition().getName());
             case Move m -> new MoveEvent(m.getPlayer().getName(),
-                    m.getRollDices().getFirstDice(),
-                    m.getRollDices().getSecondDice(),
+                    m.getRollDices().firstDice(),
+                    m.getRollDices().secondDice(),
                     m.getLastPosition().getName(),
                     m.getCurrentPosition().getName());
         };
-        listener.receive(event);
     }
 
     @Override

@@ -3,22 +3,20 @@ package org.ucieffe.kata.goosegame;
 public class CommandFactory {
 
     private Board board;
-    private OutputEventListener listener;
 
-    public CommandFactory(Board board, OutputEventListener listener) {
+    public CommandFactory(Board board) {
         this.board = board;
-        this.listener = listener;
     }
 
     public InvalidCommand invalidCommand() {
-        return new InvalidCommand(listener);
+        return new InvalidCommand();
     }
 
     public RollDicesCommand rollDicesCommand() {
-        return new RollDicesCommand(board, listener);
+        return new RollDicesCommand(board);
     }
 
     public GooseGameCommand addPlayerCommand() {
-        return new AddPlayerCommand(board, listener);
+        return new AddPlayerCommand(board);
     }
 }

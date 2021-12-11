@@ -8,14 +8,17 @@ import java.io.*;
 public class GooseGame {
 
     private final CommandInterpreter commandInterpreter;
+    private final OutputEventListener outputListener;
 
-    public GooseGame(CommandInterpreter commandInterpreter) {
+    public GooseGame(CommandInterpreter commandInterpreter, OutputEventListener outputListener) {
         this.commandInterpreter = commandInterpreter;
+        this.outputListener = outputListener;
     }
 
     public void nextCommand(String stringCommand) {
         GooseGameCommand command = commandInterpreter.run(stringCommand);
-        command.handle(stringCommand);
+        GooseGameEvent event = command.handle(stringCommand);
+        outputListener.receive(event);
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -24,8 +27,8 @@ public class GooseGame {
         OutputChannel outputChannel = new SystemOutputChannel(System.out);
         OutputStreamEventListener listener = new OutputStreamEventListener(outputChannel);
         Board board = new Board();
-        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board, listener));
-        GooseGame gooseGame = new GooseGame(commandInterpreter);
+        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board));
+        GooseGame gooseGame = new GooseGame(commandInterpreter, listener);
         do {
             String command = inputChannel.read();
             gooseGame.nextCommand(command);

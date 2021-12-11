@@ -17,8 +17,8 @@ public class GooseGameTest {
     public void setUp() {
         outputChannel = mock(OutputChannel.class);
         outputEventListener = new OutputStreamEventListener(outputChannel);
-        commandInterpreter = new CommandInterpreter(new CommandFactory(new Board(), outputEventListener));
-        gooseGame = new GooseGame(commandInterpreter);
+        commandInterpreter = new CommandInterpreter(new CommandFactory(new Board()));
+        gooseGame = new GooseGame(commandInterpreter, outputEventListener);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class GooseGameTest {
     public void playerWinWhenReachWinningPosition() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
-        gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board, outputEventListener)));
+        gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board)), outputEventListener);
 
         gooseGame.nextCommand("move Pippo 1, 2");
         verify(outputChannel).write("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!");
@@ -72,7 +72,7 @@ public class GooseGameTest {
     public void playerBounceWhenOvercomeWinningPosition() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
-        gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board, outputEventListener)));
+        gooseGame = new GooseGame(new CommandInterpreter(new CommandFactory(board)), outputEventListener);
 
         gooseGame.nextCommand("move Pippo 3, 2");
         verify(outputChannel).write("Pippo rolls 3, 2. Pippo moves from 60 to 63. Pippo bounces! Pippo returns to 61");
