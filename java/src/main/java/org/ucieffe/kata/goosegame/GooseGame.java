@@ -7,16 +7,16 @@ import java.io.*;
 
 public class GooseGame {
 
-    private final CommandInterpreter commandInterpreter;
+    private final CommandFactory commandFactory;
     private final OutputEventListener outputListener;
 
-    public GooseGame(CommandInterpreter commandInterpreter, OutputEventListener outputListener) {
-        this.commandInterpreter = commandInterpreter;
+    public GooseGame(CommandFactory commandFactory, OutputEventListener outputListener) {
+        this.commandFactory = commandFactory;
         this.outputListener = outputListener;
     }
 
     public void nextCommand(String stringCommand) {
-        GooseGameCommand command = commandInterpreter.run(stringCommand);
+        GooseGameCommand command = commandFactory.chainOfCommands();
         GooseGameEvent event = command.handle(stringCommand);
         outputListener.receive(event);
     }
@@ -27,8 +27,8 @@ public class GooseGame {
         OutputChannel outputChannel = new SystemOutputChannel(System.out);
         OutputStreamEventListener listener = new OutputStreamEventListener(outputChannel);
         Board board = new Board();
-        CommandInterpreter commandInterpreter = new CommandInterpreter(new CommandFactory(board));
-        GooseGame gooseGame = new GooseGame(commandInterpreter, listener);
+        CommandFactory commandFactory = new CommandFactory(board);
+        GooseGame gooseGame = new GooseGame(commandFactory, listener);
         do {
             String command = inputChannel.read();
             gooseGame.nextCommand(command);

@@ -2,24 +2,27 @@ package org.ucieffe.kata.goosegame;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AddPlayerCommandTest {
 
     private AddPlayerCommand addPlayerCommand;
+    private GooseGameCommand nextCommand;
     private Board board;
 
     @BeforeEach
     void setUp() {
         board = mock(Board.class);
-        addPlayerCommand = new AddPlayerCommand(board);
+        nextCommand = mock(GooseGameCommand.class);
+        addPlayerCommand = new AddPlayerCommand(board, nextCommand);
     }
 
     @Test
@@ -58,10 +61,11 @@ class AddPlayerCommandTest {
         assertThat(event, instanceOf(PlayerAlreadyPresentEvent.class));
     }
 
-    @Test
-    void commandIsIdleWhenOtherText() {
-        assertFalse(addPlayerCommand.isTriggered("add playerz Pippo"));
-        assertFalse(addPlayerCommand.isTriggered("add fhjkfh Pippo"));
-        assertFalse(addPlayerCommand.isTriggered("dgjhja player Pippo"));
+    @ParameterizedTest
+    @ValueSource(strings = {"add playerz Pippo", "add fhjkfh Pippo", "move Pippo 6,2"})
+    void callNextCommandWhenOtherText(String commandText) {
+        addPlayerCommand.handle(commandText);
+
+        verify(nextCommand).handle(commandText);
     }
 }

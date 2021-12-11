@@ -6,15 +6,17 @@ import java.util.regex.Pattern;
 public class RollDicesCommand implements GooseGameCommand {
 
     private final Board board;
+    private final GooseGameCommand nextCommand;
 
-    public RollDicesCommand(Board board) {
+    public RollDicesCommand(Board board, GooseGameCommand nextCommand) {
         this.board = board;
+        this.nextCommand = nextCommand;
     }
 
     @Override
     public GooseGameEvent handle(String commandText) {
         if(!isTriggered(commandText))
-            return null;
+            return nextCommand.handle(commandText);
         RollDices rollDices = extractMoveFrom(commandText);
         Move move = board.movePlayer(rollDices);
         return switch (move) {

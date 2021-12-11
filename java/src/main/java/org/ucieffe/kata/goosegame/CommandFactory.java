@@ -7,16 +7,8 @@ public class CommandFactory {
     public CommandFactory(Board board) {
         this.board = board;
     }
-
-    public InvalidCommand invalidCommand() {
-        return new InvalidCommand();
-    }
-
-    public RollDicesCommand rollDicesCommand() {
-        return new RollDicesCommand(board);
-    }
-
-    public GooseGameCommand addPlayerCommand() {
-        return new AddPlayerCommand(board);
+    public GooseGameCommand chainOfCommands() {
+        RollDicesCommand rollDicesCommand = new RollDicesCommand(board, new InvalidCommand());
+        return new AddPlayerCommand(board, rollDicesCommand);
     }
 }

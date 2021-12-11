@@ -2,6 +2,8 @@ package org.ucieffe.kata.goosegame;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -12,12 +14,14 @@ import static org.mockito.Mockito.*;
 class RollDicesCommandTest {
 
     private Board board;
-    private OutputEventListener listener;
+    private GooseGameCommand nextCommand;
+    private RollDicesCommand rollDicesCommand;
 
     @BeforeEach
     void setUp() {
         board = mock(Board.class);
-        listener = mock(OutputEventListener.class);
+        nextCommand = mock(GooseGameCommand.class);
+        rollDicesCommand = new RollDicesCommand(board, nextCommand);
         when(board.movePlayer(any()))
                 .thenReturn(new Move(
                         new Player("Pippo", new Box(6)),
@@ -29,16 +33,13 @@ class RollDicesCommandTest {
 
     @Test
     void commandInvokeBoardWhenReceiveValidMoveCommand() {
-        RollDicesCommand command = new RollDicesCommand(board);
-
-        command.handle("move Pippo 4, 2");
+        rollDicesCommand.handle("move Pippo 4, 2");
 
         verify(board).movePlayer(new RollDices("Pippo", 4, 2));
     }
 
     @Test
     void returnMoveEventWhenStandardMove() {
-        RollDicesCommand command = new RollDicesCommand(board);
         when(board.movePlayer(any()))
                 .thenReturn(new Move(
                         new Player("Pippo", new Box(6)),
@@ -47,7 +48,7 @@ class RollDicesCommandTest {
                         )
                 );
 
-        GooseGameEvent event = command.handle("move Pippo 4, 2");
+        GooseGameEvent event = rollDicesCommand.handle("move Pippo 4, 2");
 
         assertThat(event, instanceOf(MoveEvent.class));
         MoveEvent moveEvent = (MoveEvent)event;
@@ -60,7 +61,6 @@ class RollDicesCommandTest {
 
     @Test
     void returnWinningEventWhenWinningMove() {
-        RollDicesCommand command = new RollDicesCommand(board);
         when(board.movePlayer(any()))
                 .thenReturn(new WinningMove(
                         new Player("Pippo", new Box(63)),
@@ -69,7 +69,7 @@ class RollDicesCommandTest {
                         )
                 );
 
-        GooseGameEvent event = command.handle("move Pippo 4, 2");
+        GooseGameEvent event = rollDicesCommand.handle("move Pippo 4, 2");
 
         assertThat(event, instanceOf(WinningEvent.class));
         WinningEvent winningEvent = (WinningEvent)event;
@@ -82,7 +82,6 @@ class RollDicesCommandTest {
 
     @Test
     void returnBouncedBackEventWhenBouncedBackMove() {
-        RollDicesCommand command = new RollDicesCommand(board);
         when(board.movePlayer(any()))
                 .thenReturn(new BounceBackMove(
                                 new Player("Pippo", new Box(63)),
@@ -91,7 +90,7 @@ class RollDicesCommandTest {
                         )
                 );
 
-        GooseGameEvent event = command.handle("move Pippo 4, 2");
+        GooseGameEvent event = rollDicesCommand.handle("move Pippo 4, 2");
 
         assertThat(event, instanceOf(BounceBackEvent.class));
         BounceBackEvent bouncedBackEvent = (BounceBackEvent)event;
@@ -103,12 +102,11 @@ class RollDicesCommandTest {
     }
 
 
-    @Test
-    void commandIsSkippedWhenReceiveInvalidMoveCommand() {
-        RollDicesCommand command = new RollDicesCommand(null);
+    @ParameterizedTest
+    @ValueSource(strings = {"fjdhsdhjsfjf", "move    Pippo 4,   2", "add player Pippo"})
+    void commandIsSkippedWhenReceiveInvalidMoveCommand(String commandText) {
+        rollDicesCommand.handle(commandText);
 
-        assertFalse(command.isTriggered("fjdhsdhjsfjf"));
-        assertFalse(command.isTriggered("move    Pippo 4,   2"));
-        assertFalse(command.isTriggered("add player Pippo"));
+        verify(nextCommand).handle(commandText);
     }
 }

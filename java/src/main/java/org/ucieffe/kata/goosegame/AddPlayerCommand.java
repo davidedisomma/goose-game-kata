@@ -8,24 +8,25 @@ public class AddPlayerCommand implements GooseGameCommand {
     private static final String ADD_PLAYER_COMMAND_PREFIX = "add player ";
 
     private final Board board;
+    private final GooseGameCommand nextCommand;
 
-    public AddPlayerCommand(Board board) {
+    public AddPlayerCommand(Board board, GooseGameCommand nextCommand) {
         this.board = board;
+        this.nextCommand = nextCommand;
     }
 
     @Override
     public GooseGameEvent handle(String commandText) {
         if(!isTriggered(commandText))
-            return null;
+            return nextCommand.handle(commandText);
+
         String playerName = extractPlayerFrom(commandText);
-        GooseGameEvent event;
         if (board.isAnExistentPlayer(playerName)) {
-            event = new PlayerAlreadyPresentEvent(playerName);
+            return new PlayerAlreadyPresentEvent(playerName);
         } else {
             board.addPlayer(new Player(playerName, new StartBox()));
-            event = new AddPlayerEvent(fetchAllPlayerNames());
+            return new AddPlayerEvent(fetchAllPlayerNames());
         }
-        return event;
     }
 
     private String extractPlayerFrom(String commandText) {
