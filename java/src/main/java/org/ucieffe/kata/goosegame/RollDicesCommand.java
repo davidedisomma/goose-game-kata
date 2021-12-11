@@ -15,31 +15,32 @@ public class RollDicesCommand implements GooseGameCommand {
 
     @Override
     public GooseGameEvent handle(String commandText) {
-        if(!isTriggered(commandText))
-            return nextCommand.handle(commandText);
-        RollDices rollDices = extractMoveFrom(commandText);
-        Move move = board.movePlayer(rollDices);
-        return switch (move) {
-            case BounceBackMove m -> new BounceBackEvent(m.getPlayer().getName(),
-                    m.getRollDices().firstDice(),
-                    m.getRollDices().secondDice(),
-                    m.getLastPosition().getName(),
-                    m.getCurrentPosition().getName());
-            case WinningMove m -> new WinningEvent(m.getPlayer().getName(),
-                    m.getRollDices().firstDice(),
-                    m.getRollDices().secondDice(),
-                    m.getLastPosition().getName(),
-                    m.getCurrentPosition().getName());
-            case Move m -> new MoveEvent(m.getPlayer().getName(),
-                    m.getRollDices().firstDice(),
-                    m.getRollDices().secondDice(),
-                    m.getLastPosition().getName(),
-                    m.getCurrentPosition().getName());
-        };
+        if(isTriggeredBy(commandText)) {
+            RollDices rollDices = extractMoveFrom(commandText);
+            Move move = board.movePlayer(rollDices);
+            return switch (move) {
+                case BounceBackMove m -> new BounceBackEvent(m.getPlayer().getName(),
+                        m.getRollDices().firstDice(),
+                        m.getRollDices().secondDice(),
+                        m.getLastPosition().getName(),
+                        m.getCurrentPosition().getName());
+                case WinningMove m -> new WinningEvent(m.getPlayer().getName(),
+                        m.getRollDices().firstDice(),
+                        m.getRollDices().secondDice(),
+                        m.getLastPosition().getName(),
+                        m.getCurrentPosition().getName());
+                case Move m -> new MoveEvent(m.getPlayer().getName(),
+                        m.getRollDices().firstDice(),
+                        m.getRollDices().secondDice(),
+                        m.getLastPosition().getName(),
+                        m.getCurrentPosition().getName());
+            };
+        }
+
+        return nextCommand.handle(commandText);
     }
 
-    @Override
-    public boolean isTriggered(String commandText) {
+    private boolean isTriggeredBy(String commandText) {
         Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
         Matcher matcher = pattern.matcher(commandText);
         return matcher.matches();

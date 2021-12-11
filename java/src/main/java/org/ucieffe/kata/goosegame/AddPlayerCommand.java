@@ -17,24 +17,24 @@ public class AddPlayerCommand implements GooseGameCommand {
 
     @Override
     public GooseGameEvent handle(String commandText) {
-        if(!isTriggered(commandText))
-            return nextCommand.handle(commandText);
+        if(isTriggeredBy(commandText)) {
+            String playerName = extractPlayerFrom(commandText);
+            if (board.isAnExistentPlayer(playerName)) {
+                return new PlayerAlreadyPresentEvent(playerName);
+            }
 
-        String playerName = extractPlayerFrom(commandText);
-        if (board.isAnExistentPlayer(playerName)) {
-            return new PlayerAlreadyPresentEvent(playerName);
-        } else {
             board.addPlayer(new Player(playerName, new StartBox()));
             return new AddPlayerEvent(fetchAllPlayerNames());
         }
+
+        return nextCommand.handle(commandText);
     }
 
     private String extractPlayerFrom(String commandText) {
         return commandText.substring(ADD_PLAYER_COMMAND_PREFIX.length());
     }
 
-    @Override
-    public boolean isTriggered(String commandText) {
+    private boolean isTriggeredBy(String commandText) {
         return commandText.startsWith(ADD_PLAYER_COMMAND_PREFIX);
     }
 
