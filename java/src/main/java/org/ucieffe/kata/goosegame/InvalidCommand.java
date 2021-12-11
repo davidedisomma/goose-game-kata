@@ -8,7 +8,12 @@ public class InvalidCommand implements GooseGameCommand {
     }
 
     @Override
-    public void execute() {
+    public void handle(String commandText) {
         listener.receive(new InvalidCommandEvent());
+    }
+
+    @Override
+    public boolean isTriggered(String commandText) {
+        return true;
     }
 }

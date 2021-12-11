@@ -15,12 +15,10 @@ public class CommandInterpreter {
 
     public GooseGameCommand run(String command) {
         if(isAddPlayerCommand(command)) {
-            String playerName = extractPlayerFrom(command);
-            return commandFactory.addPlayerCommand(playerName);
+            return commandFactory.addPlayerCommand();
         }
         if(isMoveCommand(command)) {
-            RollDices rollDices = extractMoveFrom(command);
-            return commandFactory.rollDicesCommand(rollDices);
+            return commandFactory.rollDicesCommand();
         }
         return commandFactory.invalidCommand();
     }
@@ -35,20 +33,4 @@ public class CommandInterpreter {
         return command.startsWith(ADD_PLAYER_COMMAND_PREFIX);
     }
 
-    private String extractPlayerFrom(String command) {
-        return command.substring(ADD_PLAYER_COMMAND_PREFIX.length());
-    }
-
-    private RollDices extractMoveFrom(String command) {
-        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
-        Matcher matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            String player = matcher.group(1);
-            String firstDice = matcher.group(2);
-            String secondDice = matcher.group(3);
-            return new RollDices(player, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
-        } else {
-            throw new IllegalArgumentException(command);
-        }
-    }
 }

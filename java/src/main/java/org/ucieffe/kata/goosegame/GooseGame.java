@@ -15,7 +15,7 @@ public class GooseGame {
 
     public void nextCommand(String stringCommand) {
         GooseGameCommand command = commandInterpreter.run(stringCommand);
-        command.execute();
+        command.handle(stringCommand);
     }
 
     @SuppressWarnings("InfiniteLoopStatement")

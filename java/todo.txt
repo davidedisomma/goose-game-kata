@@ -1,1 +1,2 @@
 - Apply Chain of Responsability in CommandFactory
+- Board is not OCP

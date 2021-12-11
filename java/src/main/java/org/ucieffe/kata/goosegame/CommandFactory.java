@@ -14,11 +14,11 @@ public class CommandFactory {
         return new InvalidCommand(listener);
     }
 
-    public RollDicesCommand rollDicesCommand(RollDices rollDices) {
-        return new RollDicesCommand(board, listener, rollDices);
+    public RollDicesCommand rollDicesCommand() {
+        return new RollDicesCommand(board, listener);
     }
 
-    public GooseGameCommand addPlayerCommand(String playerName) {
-        return new AddPlayerCommand(board, listener, playerName);
+    public GooseGameCommand addPlayerCommand() {
+        return new AddPlayerCommand(board, listener);
     }
 }
