@@ -2,7 +2,7 @@ package org.ucieffe.kata.goosegame;
 
 import java.util.List;
 
-public abstract sealed class GooseGameEvent permits InvalidCommandEvent, AddPlayerEvent, PlayerAlreadyPresentEvent, BounceBackEvent, WinningEvent, MoveEvent{
+public abstract sealed class GooseGameEvent permits InvalidCommandEvent, AddPlayerEvent, PlayerAlreadyPresentEvent, StartEvent, BounceBackEvent, WinningEvent, MoveEvent{
 }
 
 final class InvalidCommandEvent extends GooseGameEvent {
@@ -22,6 +22,38 @@ final class PlayerAlreadyPresentEvent extends GooseGameEvent {
 
     public PlayerAlreadyPresentEvent(String playerName) {
         this.playerName = playerName;
+    }
+}
+
+final class StartEvent extends GooseGameEvent {
+
+    public final String playerName;
+    public final Integer firstDice;
+    public final Integer secondDice;
+    public final String currentPosition;
+
+    public StartEvent(String playerName, Integer firstDice, Integer secondDice, String currentPosition) {
+        this.playerName = playerName;
+        this.firstDice = firstDice;
+        this.secondDice = secondDice;
+        this.currentPosition = currentPosition;
+    }
+}
+
+final class MoveEvent extends GooseGameEvent {
+
+    public final String playerName;
+    public final Integer firstDice;
+    public final Integer secondDice;
+    public final String lastPosition;
+    public final String currentPosition;
+
+    public MoveEvent(String playerName, Integer firstDice, Integer secondDice, String lastPosition, String currentPosition) {
+        this.playerName = playerName;
+        this.firstDice = firstDice;
+        this.secondDice = secondDice;
+        this.lastPosition = lastPosition;
+        this.currentPosition = currentPosition;
     }
 }
 final class BounceBackEvent extends GooseGameEvent {
@@ -49,22 +81,6 @@ final class WinningEvent extends GooseGameEvent {
     public final String currentPosition;
 
     public WinningEvent(String playerName, Integer firstDice, Integer secondDice, String lastPosition, String currentPosition) {
-        this.playerName = playerName;
-        this.firstDice = firstDice;
-        this.secondDice = secondDice;
-        this.lastPosition = lastPosition;
-        this.currentPosition = currentPosition;
-    }
-}
-final class MoveEvent extends GooseGameEvent {
-
-    public final String playerName;
-    public final Integer firstDice;
-    public final Integer secondDice;
-    public final String lastPosition;
-    public final String currentPosition;
-
-    public MoveEvent(String playerName, Integer firstDice, Integer secondDice, String lastPosition, String currentPosition) {
         this.playerName = playerName;
         this.firstDice = firstDice;
         this.secondDice = secondDice;

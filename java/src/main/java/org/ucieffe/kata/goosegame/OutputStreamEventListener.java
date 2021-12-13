@@ -16,10 +16,20 @@ public class OutputStreamEventListener implements OutputEventListener {
             case BounceBackEvent e -> bounceBackMessage(e);
             case WinningEvent e -> winningMessage(e);
             case MoveEvent e -> moveMessage(e);
+            case StartEvent e -> startMessage(e);
             case InvalidCommandEvent e -> "No command recognized";
         };
 
         out.write(text);
+    }
+
+    private String startMessage(StartEvent e) {
+        return  String.format(
+                "%s rolls %d, %d. %s moves from %s to %s",
+                e.playerName, e.firstDice, e.secondDice,
+                e.playerName, "Start",
+                e.currentPosition
+        );
     }
 
     private String moveMessage(MoveEvent e) {

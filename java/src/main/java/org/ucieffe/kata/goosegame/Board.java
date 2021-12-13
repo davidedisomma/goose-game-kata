@@ -21,24 +21,22 @@ public class Board {
         players.put(player.getName(), player);
     }
 
-    public Move movePlayer(RollDices rollDices) {
+    public GooseGameEvent movePlayer(RollDices rollDices) {
         Player player = players.get(rollDices.playerName());
         Box lastPosition = player.getCurrentPosition();
         Integer nextPosition = lastPosition.getPosition() + rollDices.totalDices();
         if(isLandedOnWinningBox(nextPosition)) {
             player.movePosition(new WinningBox());
-            return new WinningMove(player, rollDices, lastPosition);
+            return new WinningEvent(player.getName(), rollDices.firstDice(), rollDices.secondDice(), lastPosition.getPosition().toString(), player.getCurrentPosition().getPosition().toString());
         } else if(hasGoneBeyondWinningBox(nextPosition)) {
             player.movePosition(new Box(calculatePositionAfterBounceBack(nextPosition)));
-            return new BounceBackMove(player, rollDices, lastPosition);
-        } else if (isStartedFromStart(lastPosition)) {
+            return new BounceBackEvent(player.getName(), rollDices.firstDice(), rollDices.secondDice(), lastPosition.getPosition().toString(), player.getCurrentPosition().getPosition().toString());
+        } else if(isStartedFromStart(lastPosition)) {
             player.movePosition(new Box(nextPosition));
-            return new StartMove(player, rollDices);
+            return new StartEvent(player.getName(), rollDices.firstDice(), rollDices.secondDice(), player.getCurrentPosition().getPosition().toString());
         }
-        else {
-            player.movePosition(new Box(nextPosition));
-        }
-        return new Move(player, rollDices, lastPosition);
+        player.movePosition(new Box(nextPosition));
+        return new MoveEvent(player.getName(), rollDices.firstDice(), rollDices.secondDice(), lastPosition.getPosition().toString(), player.getCurrentPosition().getPosition().toString());
     }
 
     private boolean isStartedFromStart(Box lastPosition) {

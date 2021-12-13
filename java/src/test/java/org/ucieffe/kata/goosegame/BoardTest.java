@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 public class BoardTest {
 
@@ -21,11 +22,14 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new StartBox());
         board.addPlayer(pippo);
 
-        Move movePippo = board.movePlayer(new RollDices("Pippo", 2, 4));
+        GooseGameEvent event = board.movePlayer(new RollDices("Pippo", 2, 4));
 
-        assertThat(movePippo.getPlayer(), is(pippo));
-        assertThat(movePippo.getLastPosition(), is(new StartBox()));
-        assertThat(movePippo.getCurrentPosition(), is(new Box(6)));
+        assertThat(event, instanceOf(StartEvent.class));
+        StartEvent moveEvent = (StartEvent) event;
+        assertThat(moveEvent.playerName, is("Pippo"));
+        assertThat(moveEvent.firstDice, is(2));
+        assertThat(moveEvent.secondDice, is(4));
+        assertThat(moveEvent.currentPosition, is("6"));
     }
 
     @Test
@@ -33,11 +37,15 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new Box(6));
         board.addPlayer(pippo);
 
-        Move movePippo = board.movePlayer(new RollDices("Pippo", 2, 3));
+        GooseGameEvent event = board.movePlayer(new RollDices("Pippo", 2, 3));
 
-        assertThat(movePippo.getPlayer(), is(pippo));
-        assertThat(movePippo.getLastPosition(), is(new Box(6)));
-        assertThat(movePippo.getCurrentPosition(), is(new Box(11)));
+        assertThat(event, instanceOf(MoveEvent.class));
+        MoveEvent moveEvent = (MoveEvent)event;
+        assertThat(moveEvent.playerName, is("Pippo"));
+        assertThat(moveEvent.firstDice, is(2));
+        assertThat(moveEvent.secondDice, is(3));
+        assertThat(moveEvent.lastPosition, is("6"));
+        assertThat(moveEvent.currentPosition, is("11"));
     }
 
     @Test
@@ -45,11 +53,31 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new Box(60));
         board.addPlayer(pippo);
 
-        Move movePippo = board.movePlayer(new RollDices("Pippo", 1, 2));
+        GooseGameEvent event = board.movePlayer(new RollDices("Pippo", 1, 2));
 
-        assertThat(movePippo.getPlayer(), is(pippo));
-        assertThat(movePippo.getLastPosition(), is(new Box(60)));
-        assertThat(movePippo.getCurrentPosition(), is(new WinningBox()));
+        assertThat(event, instanceOf(WinningEvent.class));
+        WinningEvent moveEvent = (WinningEvent)event;
+        assertThat(moveEvent.playerName, is("Pippo"));
+        assertThat(moveEvent.firstDice, is(1));
+        assertThat(moveEvent.secondDice, is(2));
+        assertThat(moveEvent.lastPosition, is("60"));
+        assertThat(moveEvent.currentPosition, is("63"));
+    }
+
+    @Test
+    public void movePlayerAndBounceBack() {
+        Player pippo = new Player("Pippo", new Box(60));
+        board.addPlayer(pippo);
+
+        GooseGameEvent event = board.movePlayer(new RollDices("Pippo", 2, 5));
+
+        assertThat(event, instanceOf(BounceBackEvent.class));
+        BounceBackEvent bounceBackEvent = (BounceBackEvent)event;
+        assertThat(bounceBackEvent.playerName, is("Pippo"));
+        assertThat(bounceBackEvent.firstDice, is(2));
+        assertThat(bounceBackEvent.secondDice, is(5));
+        assertThat(bounceBackEvent.lastPosition, is("60"));
+        assertThat(bounceBackEvent.currentPosition, is("59"));
     }
 
 }

@@ -17,24 +17,7 @@ public class RollDicesCommand implements GooseGameCommand {
     public GooseGameEvent handle(String commandText) {
         if(isTriggeredBy(commandText)) {
             RollDices rollDices = extractMoveFrom(commandText);
-            Move move = board.movePlayer(rollDices);
-            return switch (move) {
-                case BounceBackMove m -> new BounceBackEvent(m.getPlayer().getName(),
-                        m.getRollDices().firstDice(),
-                        m.getRollDices().secondDice(),
-                        m.getLastPosition().getName(),
-                        m.getCurrentPosition().getName());
-                case WinningMove m -> new WinningEvent(m.getPlayer().getName(),
-                        m.getRollDices().firstDice(),
-                        m.getRollDices().secondDice(),
-                        m.getLastPosition().getName(),
-                        m.getCurrentPosition().getName());
-                case Move m -> new MoveEvent(m.getPlayer().getName(),
-                        m.getRollDices().firstDice(),
-                        m.getRollDices().secondDice(),
-                        m.getLastPosition().getName(),
-                        m.getCurrentPosition().getName());
-            };
+            return board.movePlayer(rollDices);
         }
 
         return nextCommand.handle(commandText);
