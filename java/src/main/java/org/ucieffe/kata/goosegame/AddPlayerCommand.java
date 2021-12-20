@@ -23,7 +23,7 @@ public class AddPlayerCommand implements GooseGameCommand {
                 return new PlayerAlreadyPresentEvent(playerName);
             }
 
-            board.addPlayer(new Player(playerName, new StartBox()));
+            board.addPlayer(new Player(playerName));
             return new AddPlayerEvent(fetchAllPlayerNames());
         }
 

@@ -10,14 +10,15 @@ public class GooseGameTest {
 
     private OutputChannel outputChannel;
     private GooseGame gooseGame;
-    private CommandFactory commandFactory;
     private OutputStreamEventListener outputEventListener;
+    private RollDiceThrower rollDiceThrower;
 
     @BeforeEach
     public void setUp() {
         outputChannel = mock(OutputChannel.class);
+        rollDiceThrower = new RandomRollDiceThrower();
         outputEventListener = new OutputStreamEventListener(outputChannel);
-        commandFactory = new CommandFactory(new Board());
+        CommandFactory commandFactory = new CommandFactory(new Board(), rollDiceThrower);
         gooseGame = new GooseGame(commandFactory, outputEventListener);
     }
 
@@ -62,7 +63,7 @@ public class GooseGameTest {
     public void playerWinWhenReachWinningPosition() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
-        gooseGame = new GooseGame(new CommandFactory(board), outputEventListener);
+        gooseGame = new GooseGame(new CommandFactory(board, rollDiceThrower), outputEventListener);
 
         gooseGame.nextCommand("move Pippo 1, 2");
         verify(outputChannel).write("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!");
@@ -72,9 +73,19 @@ public class GooseGameTest {
     public void playerBounceWhenOvercomeWinningPosition() {
         Board board = new Board();
         board.addPlayer(new Player("Pippo", new Box(60)));
-        gooseGame = new GooseGame(new CommandFactory(board), outputEventListener);
+        gooseGame = new GooseGame(new CommandFactory(board, rollDiceThrower), outputEventListener);
 
         gooseGame.nextCommand("move Pippo 3, 2");
         verify(outputChannel).write("Pippo rolls 3, 2. Pippo moves from 60 to 63. Pippo bounces! Pippo returns to 61");
+    }
+
+    @Test
+    void gameThrowsDices() {
+        Board board = new Board();
+        board.addPlayer(new Player("Pippo", new Box(3)));
+        gooseGame = new GooseGame(new CommandFactory(board, rollDiceThrower), outputEventListener);
+
+        gooseGame.nextCommand("move Pippo");
+        verify(outputChannel).write(matches("Pippo rolls ([1-6]), ([1-6]). Pippo moves from 3 to ([4-9])"));
     }
 }

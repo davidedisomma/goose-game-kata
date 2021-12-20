@@ -4,8 +4,12 @@ import java.util.Objects;
 
 public class Player {
 
-    private String name;
+    private final String name;
     private Box currentPosition;
+
+    public Player(String name) {
+        this(name, new StartBox());
+    }
 
     public Player(String name, Box currentPosition) {
         this.name = name;
