@@ -22,7 +22,7 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new StartBox());
         board.addPlayer(pippo);
 
-        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices("Pippo", 2, 4)));
+        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices(2, 4)));
 
         assertThat(event, instanceOf(StartEvent.class));
         StartEvent moveEvent = (StartEvent) event;
@@ -37,7 +37,7 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new Box(6));
         board.addPlayer(pippo);
 
-        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices("Pippo", 2, 3)));
+        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices(2, 3)));
 
         assertThat(event, instanceOf(MoveEvent.class));
         MoveEvent moveEvent = (MoveEvent)event;
@@ -53,7 +53,7 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new Box(60));
         board.addPlayer(pippo);
 
-        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices("Pippo", 1, 2)));
+        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices(1, 2)));
 
         assertThat(event, instanceOf(WinningEvent.class));
         WinningEvent moveEvent = (WinningEvent)event;
@@ -69,7 +69,7 @@ public class BoardTest {
         Player pippo = new Player("Pippo", new Box(60));
         board.addPlayer(pippo);
 
-        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices("Pippo", 2, 5)));
+        GooseGameEvent event = board.movePlayer(new Move("Pippo", new RollDices(2, 5)));
 
         assertThat(event, instanceOf(BounceBackEvent.class));
         BounceBackEvent bounceBackEvent = (BounceBackEvent)event;

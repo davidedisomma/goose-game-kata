@@ -26,7 +26,7 @@ class RollDicesCommandTest {
     void commandInvokeBoardWhenReceiveValidMoveCommand() {
         rollDicesCommand.handle("move Pippo 4, 2");
 
-        verify(board).movePlayer(new Move("Pippo", new RollDices("Pippo", 4 , 2)));
+        verify(board).movePlayer(new Move("Pippo", new RollDices(4 , 2)));
     }
 
     @ParameterizedTest

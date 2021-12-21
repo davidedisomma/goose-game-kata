@@ -30,7 +30,7 @@ class GameRollDicesCommandTest {
 
     @Test
     void triggerCommandWhenTextMatches() {
-        RollDices rollDices = new RollDices("Pippo", 3, 2);
+        RollDices rollDices = new RollDices(3, 2);
         when(rollDicesThrower.throwDices("Pippo"))
                 .thenReturn(rollDices);
 

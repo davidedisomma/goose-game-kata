@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RandomRollDiceThrower implements RollDiceThrower {
     @Override
     public RollDices throwDices(String player) {
-        return new RollDices(player, randomNumberFromOneToSix(), randomNumberFromOneToSix());
+        return new RollDices(randomNumberFromOneToSix(), randomNumberFromOneToSix());
     }
 
     private int randomNumberFromOneToSix() {

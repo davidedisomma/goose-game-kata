@@ -16,7 +16,6 @@ public class RollDicesCommand implements GooseGameCommand {
     @Override
     public GooseGameEvent handle(String commandText) {
         if(isTriggeredBy(commandText)) {
-            RollDices rollDices = extractRollDicesFrom(commandText);
             Move playerMove = extractMoveFrom(commandText);
             return board.movePlayer(playerMove);
         }
@@ -30,19 +29,6 @@ public class RollDicesCommand implements GooseGameCommand {
         return matcher.matches();
     }
 
-    private RollDices extractRollDicesFrom(String command) {
-        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
-        Matcher matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            String player = matcher.group(1);
-            String firstDice = matcher.group(2);
-            String secondDice = matcher.group(3);
-            return new RollDices(player, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
-        } else {
-            throw new IllegalArgumentException(command);
-        }
-    }
-
     private Move extractMoveFrom(String command) {
         Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
         Matcher matcher = pattern.matcher(command);
@@ -50,7 +36,7 @@ public class RollDicesCommand implements GooseGameCommand {
             String playerName = matcher.group(1);
             String firstDice = matcher.group(2);
             String secondDice = matcher.group(3);
-            final RollDices rollDices = new RollDices(playerName, Integer.parseInt(firstDice), Integer.parseInt(secondDice));
+            final RollDices rollDices = new RollDices(Integer.parseInt(firstDice), Integer.parseInt(secondDice));
             return new Move(playerName, rollDices);
         } else {
             throw new IllegalArgumentException(command);
