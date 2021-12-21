@@ -24,14 +24,11 @@ public class RollDicesCommand implements GooseGameCommand {
     }
 
     private boolean isTriggeredBy(String commandText) {
-        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
-        Matcher matcher = pattern.matcher(commandText);
-        return matcher.matches();
+        return createRollDicesCommandMatcherFrom(commandText).matches();
     }
 
-    private Move extractMoveFrom(String command) {
-        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
-        Matcher matcher = pattern.matcher(command);
+    private Move extractMoveFrom(String commandText) {
+        Matcher matcher = createRollDicesCommandMatcherFrom(commandText);
         if (matcher.find()) {
             String playerName = matcher.group(1);
             String firstDice = matcher.group(2);
@@ -39,7 +36,12 @@ public class RollDicesCommand implements GooseGameCommand {
             final RollDices rollDices = new RollDices(Integer.parseInt(firstDice), Integer.parseInt(secondDice));
             return new Move(playerName, rollDices);
         } else {
-            throw new IllegalArgumentException(command);
+            throw new IllegalArgumentException(commandText);
         }
+    }
+
+    private Matcher createRollDicesCommandMatcherFrom(String commandText) {
+        Pattern pattern = Pattern.compile("^move (\\w+) ([1-6]), ([1-6])");
+        return pattern.matcher(commandText);
     }
 }

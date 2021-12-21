@@ -27,14 +27,16 @@ public class GameRollDicesCommand implements GooseGameCommand{
     }
 
     private boolean isTriggeredBy(String commandText) {
+        return createGameRollDicesCommandMatcherFrom(commandText).matches();
+    }
+
+    private Matcher createGameRollDicesCommandMatcherFrom(String commandText) {
         Pattern pattern = Pattern.compile("^move (\\w+)");
-        Matcher matcher = pattern.matcher(commandText);
-        return matcher.matches();
+        return pattern.matcher(commandText);
     }
 
     private String extractPlayerNameFrom(String command) {
-        Pattern pattern = Pattern.compile("^move (\\w+)");
-        Matcher matcher = pattern.matcher(command);
+        Matcher matcher = createGameRollDicesCommandMatcherFrom(command);
         if (matcher.find()) {
             return matcher.group(1);
         } else {
