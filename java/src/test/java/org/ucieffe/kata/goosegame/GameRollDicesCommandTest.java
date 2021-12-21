@@ -36,6 +36,6 @@ class GameRollDicesCommandTest {
 
         command.handle("move Pippo");
 
-        verify(board).movePlayer(rollDices);
+        verify(board).movePlayer(new Move("Pippo", rollDices));
     }
 }

@@ -5,10 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class RollDicesCommandTest {
@@ -30,7 +26,7 @@ class RollDicesCommandTest {
     void commandInvokeBoardWhenReceiveValidMoveCommand() {
         rollDicesCommand.handle("move Pippo 4, 2");
 
-        verify(board).movePlayer(new RollDices("Pippo", 4, 2));
+        verify(board).movePlayer(new Move("Pippo", new RollDices("Pippo", 4 , 2)));
     }
 
     @ParameterizedTest

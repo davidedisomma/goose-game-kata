@@ -21,8 +21,9 @@ public class Board {
         players.put(player.getName(), player);
     }
 
-    public GooseGameEvent movePlayer(RollDices rollDices) {
-        Player player = players.get(rollDices.playerName());
+    public GooseGameEvent movePlayer(Move playerMove) {
+        Player player = players.get(playerMove.playerName());
+        RollDices rollDices = playerMove.rollDices();
         Box lastPosition = player.getCurrentPosition();
         Integer nextPosition = lastPosition.getPosition() + rollDices.totalDices();
         if(isLandedOnWinningBox(nextPosition)) {

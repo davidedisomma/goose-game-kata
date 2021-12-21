@@ -86,6 +86,6 @@ public class GooseGameTest {
         gooseGame = new GooseGame(new CommandFactory(board, rollDiceThrower), outputEventListener);
 
         gooseGame.nextCommand("move Pippo");
-        verify(outputChannel).write(matches("Pippo rolls ([1-6]), ([1-6]). Pippo moves from 3 to ([4-9])"));
+        verify(outputChannel).write(matches("Pippo rolls ([1-6]), ([1-6]). Pippo moves from 3 to (\\d*)"));
     }
 }

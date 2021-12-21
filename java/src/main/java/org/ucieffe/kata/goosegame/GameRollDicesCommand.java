@@ -20,7 +20,8 @@ public class GameRollDicesCommand implements GooseGameCommand{
         if(isTriggeredBy(commandText)) {
             String playerName = extractPlayerNameFrom(commandText);
             RollDices rollDices = rollDicesThrower.throwDices(playerName);
-            return board.movePlayer(rollDices);
+            Move playerMove = new Move(playerName, rollDices);
+            return board.movePlayer(playerMove);
         }
         return nextCommand.handle(commandText);
     }
